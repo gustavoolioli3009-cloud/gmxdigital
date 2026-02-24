@@ -15,6 +15,7 @@ export function useGsap(
   useEffect(() => {
     const ctx = gsap.context(callback, ref);
     return () => ctx.revert();
+    // deps is intentionally forwarded from the caller, who controls what triggers re-runs
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 

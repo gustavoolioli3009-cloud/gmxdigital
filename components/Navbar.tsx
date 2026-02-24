@@ -15,6 +15,8 @@ const navLinks = [
   { label: "Contact", href: "#contact" },
 ];
 
+const SCROLL_HIDE_THRESHOLD = 100;
+
 export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -25,7 +27,7 @@ export default function Navbar() {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       if (navRef.current) {
-        if (currentScroll > lastScroll && currentScroll > 100) {
+        if (currentScroll > lastScroll && currentScroll > SCROLL_HIDE_THRESHOLD) {
           gsap.to(navRef.current, { yPercent: -100, duration: 0.4, ease: "power2.inOut" });
         } else {
           gsap.to(navRef.current, { yPercent: 0, duration: 0.4, ease: "power2.inOut" });

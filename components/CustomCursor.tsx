@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
+const CURSOR_FOLLOW_SPEED = 0.12;
+
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const outlineRef = useRef<HTMLDivElement>(null);
@@ -31,8 +33,8 @@ export default function CustomCursor() {
     };
 
     const animateOutline = () => {
-      outlineX += (mouseX - outlineX) * 0.12;
-      outlineY += (mouseY - outlineY) * 0.12;
+      outlineX += (mouseX - outlineX) * CURSOR_FOLLOW_SPEED;
+      outlineY += (mouseY - outlineY) * CURSOR_FOLLOW_SPEED;
 
       gsap.set(outline, {
         x: outlineX,
