@@ -144,11 +144,19 @@ export default function About() {
           className="grid grid-cols-3 gap-8 mt-20 md:mt-32 pt-12 border-t border-white/10"
         >
           {stats.map((stat) => (
-            <div key={stat.label} className="stat-item">
-              <span className="font-display font-bold text-5xl md:text-7xl gradient-text block">
+            <div
+              key={stat.label}
+              className="stat-item glass-card p-6 rounded-xl"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+              }}
+            >
+              <span className="relative z-10 font-display font-bold text-5xl md:text-7xl gradient-text block">
                 {stat.value}
               </span>
-              <span className="font-body text-text-secondary text-sm md:text-base tracking-widest uppercase mt-2 block">
+              <span className="relative z-10 font-body text-text-secondary text-sm md:text-base tracking-widest uppercase mt-2 block">
                 {stat.label}
               </span>
             </div>
