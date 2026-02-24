@@ -21,10 +21,14 @@ export default function Marquee() {
       className="py-12 md:py-16 bg-[#111111] border-y border-white/10 overflow-hidden"
       aria-label="Services ticker"
     >
-      <div className="flex animate-marquee whitespace-nowrap">
+      <div
+        className="flex animate-marquee whitespace-nowrap"
+        aria-hidden="true"
+      >
         {doubled.map((item, i) => (
           <span
             key={i}
+            tabIndex={-1}
             className={`font-display font-bold text-4xl md:text-6xl tracking-tight mr-8 ${
               item === "•"
                 ? "text-[#6366f1]"

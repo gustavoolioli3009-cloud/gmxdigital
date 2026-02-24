@@ -10,6 +10,8 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<import("lenis").default | null>(null);
 
   useEffect(() => {
+    let rafId: number;
+
     const initLenis = async () => {
       const Lenis = (await import("lenis")).default;
       const lenis = new Lenis({
@@ -22,15 +24,16 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
 
       const raf = (time: number) => {
         lenis.raf(time);
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
       };
 
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     };
 
     initLenis();
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenisRef.current?.destroy();
     };
   }, []);

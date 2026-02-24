@@ -21,24 +21,25 @@ export default function Navbar() {
   const navRef = useRef<HTMLElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [lastScroll, setLastScroll] = useState(0);
+  // Use a ref instead of state to avoid re-renders on every scroll event
+  const lastScrollRef = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       if (navRef.current) {
-        if (currentScroll > lastScroll && currentScroll > SCROLL_HIDE_THRESHOLD) {
+        if (currentScroll > lastScrollRef.current && currentScroll > SCROLL_HIDE_THRESHOLD) {
           gsap.to(navRef.current, { yPercent: -100, duration: 0.4, ease: "power2.inOut" });
         } else {
           gsap.to(navRef.current, { yPercent: 0, duration: 0.4, ease: "power2.inOut" });
         }
       }
-      setLastScroll(currentScroll);
+      lastScrollRef.current = currentScroll;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScroll]);
+  }, []);
 
   useEffect(() => {
     if (!menuRef.current) return;
@@ -102,6 +103,7 @@ export default function Navbar() {
           className="relative w-10 h-6 flex flex-col justify-between group"
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
+          aria-controls="fullscreen-menu"
         >
           <span
             className={`block h-[1px] bg-white transition-all duration-300 origin-center ${
@@ -123,7 +125,11 @@ export default function Navbar() {
 
       {/* Fullscreen Menu */}
       <div
+        id="fullscreen-menu"
         ref={menuRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Navigation menu"
         className="fixed inset-0 bg-[#0a0a0a] z-40 flex-col items-center justify-center"
         style={{ display: "none" }}
       >
@@ -145,6 +151,7 @@ export default function Navbar() {
               key={social}
               href="#"
               className="text-text-secondary hover:text-white text-sm tracking-widest uppercase transition-colors duration-200 font-body"
+              aria-label={`GMX Digital on ${social}`}
             >
               {social}
             </a>
