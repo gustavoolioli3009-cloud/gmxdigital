@@ -110,17 +110,24 @@ export default function Services() {
           {services.map((service) => (
             <div key={service.number}>
               <div className="service-line h-[1px] bg-white/10 origin-left" />
-              <div className="service-item group py-6 md:py-8 flex flex-col md:flex-row md:items-center gap-4 md:gap-0 cursor-pointer hover:pl-4 transition-all duration-300">
-                <span className="font-display text-text-secondary text-sm font-bold w-16">
+              <div
+                className="service-item glass-card group py-6 md:py-8 px-4 rounded-lg flex flex-col md:flex-row md:items-center gap-4 md:gap-0 cursor-pointer hover:pl-6 transition-all duration-300 my-1"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                  e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+                }}
+              >
+                <span className="relative z-10 font-display text-text-secondary text-sm font-bold w-16">
                   {service.number}
                 </span>
-                <h3 className="font-display font-bold text-2xl md:text-4xl text-text-primary group-hover:gradient-text transition-all duration-300 md:flex-1">
+                <h3 className="relative z-10 font-display font-bold text-2xl md:text-4xl text-text-primary group-hover:gradient-text transition-all duration-300 md:flex-1">
                   {service.title}
                 </h3>
-                <p className="font-body text-text-secondary text-sm md:text-base max-w-xs leading-relaxed md:ml-auto">
+                <p className="relative z-10 font-body text-text-secondary text-sm md:text-base max-w-xs leading-relaxed md:ml-auto">
                   {service.description}
                 </p>
-                <span className="hidden md:block ml-12 text-text-secondary group-hover:text-white transition-colors duration-200">
+                <span className="relative z-10 hidden md:block ml-12 text-text-secondary group-hover:text-white transition-colors duration-200">
                   →
                 </span>
               </div>

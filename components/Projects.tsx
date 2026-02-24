@@ -120,13 +120,23 @@ export default function Projects() {
           {projects.map((project, i) => (
             <div
               key={project.id}
-              className={`project-card group relative overflow-hidden rounded-sm cursor-pointer ${
+              className={`project-card portfolio-frame group relative overflow-hidden rounded-sm cursor-pointer ${
                 project.size === "large"
                   ? "md:col-span-8"
                   : "md:col-span-4"
               } ${i % 3 === 0 && project.size === "large" ? "md:col-start-1" : ""}`}
               style={{ aspectRatio: project.size === "large" ? "16/9" : "4/3" }}
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                e.currentTarget.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+                e.currentTarget.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
+              }}
             >
+              {/* Project number badge */}
+              <span className="project-badge">
+                {String(project.id).padStart(2, "0")}
+              </span>
+
               {/* Placeholder image */}
               <div
                 className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
@@ -138,8 +148,14 @@ export default function Projects() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-white/5" />
               </div>
 
+              {/* Scan line sweep */}
+              <div className="scan-line-sweep" />
+
+              {/* Mouse spotlight */}
+              <div className="portfolio-spotlight" />
+
               {/* Overlay */}
-              <div className="absolute inset-0 bg-[#0a0a0a]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8">
+              <div className="absolute inset-0 z-10 bg-[#0a0a0a]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-8">
                 <p className="text-text-secondary text-xs tracking-widest uppercase font-body mb-2">
                   {project.category}
                 </p>
@@ -152,7 +168,7 @@ export default function Projects() {
               </div>
 
               {/* Always visible title on bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
+              <div className="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-6 opacity-100 group-hover:opacity-0 transition-opacity duration-300">
                 <div className="flex items-end justify-between">
                   <span className="font-display font-medium text-white/60 text-sm">
                     {project.title}
