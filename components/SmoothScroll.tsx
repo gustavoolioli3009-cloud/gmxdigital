@@ -7,8 +7,7 @@ interface SmoothScrollProps {
 }
 
 export default function SmoothScroll({ children }: SmoothScrollProps) {
-  // Using unknown ref type since lenis types may vary by version
-  const lenisRef = useRef<{ raf: (time: number) => void; destroy: () => void } | null>(null);
+  const lenisRef = useRef<import("lenis").default | null>(null);
 
   useEffect(() => {
     const initLenis = async () => {
