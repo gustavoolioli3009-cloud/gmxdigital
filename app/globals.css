@@ -5,6 +5,8 @@
 :root {
   --font-space-grotesk: 'Space Grotesk', sans-serif;
   --font-inter: 'Inter', sans-serif;
+  --gmx-blue: #00f2fe;
+  --gmx-pink: #f72585;
 }
 
 * {
@@ -96,6 +98,199 @@ body {
 ::selection {
   background-color: #6366f1;
   color: #f5f5f5;
+}
+
+/* === GLASS CARD SYSTEM === */
+
+/* Glass Card base */
+.glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 30px 60px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.4s cubic-bezier(0.23, 1, 0.32, 1),
+    border-color 0.3s ease;
+}
+
+/* Mouse spotlight via ::before */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, -9999px) var(--mouse-y, -9999px),
+    rgba(0, 242, 254, 0.08),
+    transparent 40%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glass diagonal sweep via ::after */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    transparent 40%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 55%,
+    transparent 60%
+  );
+  animation: glassSweep 8s infinite linear;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes glassSweep {
+  0% { transform: rotate(30deg) translate(-100%, -100%); }
+  100% { transform: rotate(30deg) translate(100%, 100%); }
+}
+
+.glass-card:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 50px 100px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(0, 242, 254, 0.2);
+  border-color: rgba(0, 242, 254, 0.25);
+}
+
+/* Corner accents */
+.glass-corner {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.glass-card:hover .glass-corner {
+  opacity: 1;
+}
+
+.glass-corner-tl {
+  top: 10px;
+  left: 10px;
+  border-top: 1px solid var(--gmx-blue);
+  border-left: 1px solid var(--gmx-blue);
+}
+
+.glass-corner-tr {
+  top: 10px;
+  right: 10px;
+  border-top: 1px solid var(--gmx-blue);
+  border-right: 1px solid var(--gmx-blue);
+}
+
+.glass-corner-bl {
+  bottom: 10px;
+  left: 10px;
+  border-bottom: 1px solid var(--gmx-blue);
+  border-left: 1px solid var(--gmx-blue);
+}
+
+.glass-corner-br {
+  bottom: 10px;
+  right: 10px;
+  border-bottom: 1px solid var(--gmx-blue);
+  border-right: 1px solid var(--gmx-blue);
+}
+
+/* Portfolio scan line */
+.portfolio-scan-line {
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gmx-blue), transparent);
+  animation: scanLine 5s 1s infinite linear;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes scanLine {
+  0% { top: -2px; opacity: 0; }
+  5% { opacity: 0.5; }
+  95% { opacity: 0.5; }
+  100% { top: calc(100% + 2px); opacity: 0; }
+}
+
+/* Portfolio corner badge */
+.portfolio-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 6;
+  font-family: var(--font-space-grotesk), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: rgba(0, 242, 254, 0.8);
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+  padding: 3px 8px;
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+/* Portfolio mouse spotlight overlay */
+.portfolio-spotlight {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  background: radial-gradient(
+    400px circle at var(--mouse-x, -9999px) var(--mouse-y, -9999px),
+    rgba(0, 242, 254, 0.06),
+    transparent 40%
+  );
+}
+
+/* Glow pulse for numbers */
+@keyframes glowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.9)) drop-shadow(0 0 40px rgba(139, 92, 246, 0.4));
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .glass-card::after {
+    animation: none;
+  }
+
+  .portfolio-scan-line {
+    animation: none;
+    display: none;
+  }
+
+  .glow-pulse {
+    animation: none;
+  }
 }
 
 /* Preloader */

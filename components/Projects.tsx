@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -63,17 +63,40 @@ export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const card = e.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mouse-x", `${x}px`);
+    card.style.setProperty("--mouse-y", `${y}px`);
+  }, []);
+
+  const handleMouseLeave = useCallback((e: MouseEvent) => {
+    const card = e.currentTarget as HTMLElement;
+    card.style.setProperty("--mouse-x", "-9999px");
+    card.style.setProperty("--mouse-y", "-9999px");
+  }, []);
+
   useEffect(() => {
+    const cards =
+      cardsRef.current?.querySelectorAll<HTMLElement>(".project-card");
+    cards?.forEach((card) => {
+      card.addEventListener("mousemove", handleMouseMove);
+      card.addEventListener("mouseleave", handleMouseLeave);
+    });
+
     const ctx = gsap.context(() => {
-      const cards = cardsRef.current?.querySelectorAll(".project-card");
-      if (cards) {
+      const cardEls = cardsRef.current?.querySelectorAll(".project-card");
+      if (cardEls) {
         gsap.fromTo(
-          cards,
-          { y: 80, opacity: 0 },
+          cardEls,
+          { clipPath: "inset(100% 0 0 0)", scale: 0.88, opacity: 0 },
           {
-            y: 0,
+            clipPath: "inset(0% 0 0 0)",
+            scale: 1,
             opacity: 1,
-            duration: 0.9,
+            duration: 1,
             stagger: 0.12,
             ease: "power3.out",
             scrollTrigger: {
@@ -85,14 +108,20 @@ export default function Projects() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      ctx.revert();
+      cards?.forEach((card) => {
+        card.removeEventListener("mousemove", handleMouseMove);
+        card.removeEventListener("mouseleave", handleMouseLeave);
+      });
+    };
+  }, [handleMouseMove, handleMouseLeave]);
 
   return (
     <section
       ref={sectionRef}
       id="projects"
-      className="py-24 md:py-40 px-6 md:px-16 bg-[#0a0a0a]"
+      className="py-24 md:py-40 px-6 md:px-16 bg-[#060610]"
     >
       <div className="max-w-7xl mx-auto">
         <div className="flex items-end justify-between mb-16 md:mb-24">
@@ -120,16 +149,24 @@ export default function Projects() {
           {projects.map((project, i) => (
             <div
               key={project.id}
-              className={`project-card group relative overflow-hidden rounded-sm cursor-pointer ${
+              className={`project-card group relative overflow-hidden cursor-pointer border border-white/10 hover:border-[#00f2fe]/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_40px_80px_rgba(0,0,0,0.5)] ${
                 project.size === "large"
                   ? "md:col-span-8"
                   : "md:col-span-4"
               } ${i % 3 === 0 && project.size === "large" ? "md:col-start-1" : ""}`}
               style={{ aspectRatio: project.size === "large" ? "16/9" : "4/3" }}
             >
+              {/* Mouse spotlight */}
+              <div className="portfolio-spotlight" />
+
+              {/* Corner badge */}
+              <div className="portfolio-badge" aria-label={`Project ${i + 1}`}>{String(i + 1).padStart(3, "0")}</div>
+
+              {/* Scan line */}
+              <div className="portfolio-scan-line" />
               {/* Placeholder image */}
               <div
-                className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-105"
+                className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-110"
                 style={{ backgroundColor: project.color }}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,6 +20,21 @@ export default function About() {
   const textRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const card = e.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--mouse-x", `${x}px`);
+    card.style.setProperty("--mouse-y", `${y}px`);
+  }, []);
+
+  const handleMouseLeave = useCallback((e: MouseEvent) => {
+    const card = e.currentTarget as HTMLElement;
+    card.style.setProperty("--mouse-x", "-9999px");
+    card.style.setProperty("--mouse-y", "-9999px");
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -92,8 +107,21 @@ export default function About() {
       }
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
+    const statCards =
+      statsRef.current?.querySelectorAll<HTMLElement>(".stat-item");
+    statCards?.forEach((card) => {
+      card.addEventListener("mousemove", handleMouseMove);
+      card.addEventListener("mouseleave", handleMouseLeave);
+    });
+
+    return () => {
+      ctx.revert();
+      statCards?.forEach((card) => {
+        card.removeEventListener("mousemove", handleMouseMove);
+        card.removeEventListener("mouseleave", handleMouseLeave);
+      });
+    };
+  }, [handleMouseMove, handleMouseLeave]);
 
   return (
     <section
@@ -141,16 +169,23 @@ export default function About() {
         {/* Stats */}
         <div
           ref={statsRef}
-          className="grid grid-cols-3 gap-8 mt-20 md:mt-32 pt-12 border-t border-white/10"
+          className="grid grid-cols-3 gap-4 md:gap-6 mt-20 md:mt-32 pt-12 border-t border-white/10"
         >
           {stats.map((stat) => (
-            <div key={stat.label} className="stat-item">
-              <span className="font-display font-bold text-5xl md:text-7xl gradient-text block">
-                {stat.value}
-              </span>
-              <span className="font-body text-text-secondary text-sm md:text-base tracking-widest uppercase mt-2 block">
-                {stat.label}
-              </span>
+            <div key={stat.label} className="stat-item glass-card rounded-xl p-6">
+              {/* Corner accents */}
+              <div className="glass-corner glass-corner-tl" />
+              <div className="glass-corner glass-corner-tr" />
+              <div className="glass-corner glass-corner-bl" />
+              <div className="glass-corner glass-corner-br" />
+              <div className="relative z-[3]">
+                <span className="font-display font-bold text-5xl md:text-7xl gradient-text glow-pulse block">
+                  {stat.value}
+                </span>
+                <span className="font-body text-text-secondary text-sm md:text-base tracking-widest uppercase mt-2 block">
+                  {stat.label}
+                </span>
+              </div>
             </div>
           ))}
         </div>
