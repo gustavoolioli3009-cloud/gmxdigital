@@ -18,6 +18,13 @@ export default function Home() {
 
   return (
     <>
+      {/* Skip navigation for keyboard and screen-reader users */}
+      <a
+        href="#hero"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2 focus:bg-[#6366f1] focus:text-white focus:rounded focus:text-sm focus:font-body"
+      >
+        Ir para o conteúdo principal
+      </a>
       <CustomCursor />
       {loading && <Preloader onComplete={() => setLoading(false)} />}
       <SmoothScroll>

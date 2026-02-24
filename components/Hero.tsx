@@ -54,6 +54,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="hero"
+      tabIndex={-1}
       className="relative min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-16 noise-overlay overflow-hidden"
     >
       {/* Background gradient */}
